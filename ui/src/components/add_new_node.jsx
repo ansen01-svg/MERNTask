@@ -1,12 +1,18 @@
 import React, { useCallback } from "react";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import Button from "@mui/material/Button";
 import { Handle, Position } from "@xyflow/react";
 import { useReactFlow } from "@xyflow/react";
+import { useMyEmailDataContext } from "../store_provider/email_data_provider";
+import { isObjectComplete } from "../lib/check_object_has_all_values";
 
 export default function AddNewNode({ data }) {
   const { setNodes, setEdges, getNodes, getEdges } = useReactFlow();
   const nodes = getNodes();
   const edges = getEdges();
+
+  const { emailData } = useMyEmailDataContext();
+  const hasAllValues = isObjectComplete(emailData);
 
   const addNewNode = useCallback(() => {
     const lastNode = nodes[nodes.length - 2]; // Get the last actual node
@@ -45,15 +51,41 @@ export default function AddNewNode({ data }) {
     setEdges((eds) => [...filteredEdges, newEdge, addNodeEdge]);
   }, [nodes, edges, setNodes, setEdges]);
 
+  const saveSequence = () => {
+    console.log("saved sequence");
+  };
+
+  if (hasAllValues) return <SaveWorkFlow saveSequence={saveSequence} />;
+
+  return <AddNode addNewNode={addNewNode} />;
+}
+
+function AddNode({ addNewNode }) {
   return (
     <div
-      className="p-2 border-solid border-[2px] border-blue-400 rounded-md"
+      className="px-[4px] py-[3px] border-solid border-[2px] border-[#1976d2] rounded-md"
       onClick={addNewNode}
     >
       <button className="w-full h-full flex items-center justify-center">
-        <AddOutlinedIcon sx={{ color: "#60a5fa" }} />
+        <AddOutlinedIcon sx={{ color: "#1976d2" }} />
       </button>
       <Handle type="target" position={Position.Top} />
+    </div>
+  );
+}
+
+function SaveWorkFlow({ saveSequence }) {
+  return (
+    <div>
+      <Handle type="target" position={Position.Top} />
+      <Button
+        variant="contained"
+        size="small"
+        onClick={saveSequence}
+        sx={{ font: "14px", minWidth: "74px", textTransform: "none" }}
+      >
+        Save
+      </Button>
     </div>
   );
 }

@@ -9,12 +9,15 @@ import {
   addEdge,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import AddNewNode from "./addNewNode";
-import CategoryNode from "./categoryNode";
+import AddNewNode from "./add_new_node";
+import CategoryNode from "./category_node";
+import AddLeadNode from "./add_lead_source_node";
+import StartNode from "./start_node";
 import { initialNodes } from "../utils/initial_nodes";
-import { initialEdges } from "../utils/initial_edges";
 
 const nodeTypes = {
+  addLeadNode: AddLeadNode,
+  startNode: StartNode,
   addNewNode: AddNewNode,
   categoryNode: CategoryNode,
 };
@@ -22,7 +25,7 @@ const nodeTypes = {
 // Main FlowEditor Component
 export default function FlowEditor() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
   // Load nodes and edges from localStorage on component mount
   useEffect(() => {
@@ -47,7 +50,7 @@ export default function FlowEditor() {
   );
 
   return (
-    <div className="w-full h-[calc(100vh-65px)] bg-gray-200">
+    <div className="w-full h-[calc(100vh-65px)] bg-slate-100 rounded-lg">
       <ReactFlow
         nodes={nodes}
         edges={edges}
