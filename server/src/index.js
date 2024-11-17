@@ -1,36 +1,36 @@
-// server/server.js
+require("dotenv").config();
 const express = require("express");
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
+const cors = require("cors");
 const emailRoutes = require("./routes/emailRoutes");
-const agenda = require("./jobs/agendaJobs"); // Import agenda
+const agenda = require("./jobs/agendaJobs");
+const connectDb = require("./config/db");
 
-dotenv.config();
 const app = express();
+
+app.use(
+  cors({
+    origin: process.env.CLIENT,
+  })
+);
 app.use(express.json());
+app.use("/api/v1/email", emailRoutes);
 
 const PORT = process.env.PORT || 5000;
-app.use("/api", emailRoutes);
 
-const start = async () => {
+const startServer = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI);
+    await connectDb(process.env.MONGO_URI);
 
-    agenda
-      .start()
-      .then(() => {
-        console.log("Agenda started");
-      })
-      .catch((err) => {
-        console.error("Agenda failed to start:", err);
-      });
+    await agenda.start();
+    console.log("Agenda started successfully");
 
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}...`);
     });
   } catch (error) {
-    console.log("MongoDB connection error:", error);
+    console.error("Error during startup:", error.message);
+    process.exit(1);
   }
 };
 
-start();
+startServer();

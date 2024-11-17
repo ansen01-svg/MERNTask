@@ -1,19 +1,18 @@
-// server/jobs/agendaJob.js
 const Agenda = require("agenda");
 const sendMail = require("../config/nodemailer_config");
 
-const agenda = new Agenda({ db: { address: process.env.MONGO_URI } });
-
-agenda.define("send email", async (job) => {
-  const { email, subject, text } = job.attrs.data;
-
-  await sendMail({
-    to: email,
-    subject,
-    text,
-  });
+const agenda = new Agenda({
+  db: { address: process.env.MONGO_URI, collection: "emailJobs" },
 });
 
-agenda.start();
+agenda.define("send email", async (job) => {
+  const { emailId, subject, body } = job.attrs.data;
+
+  await sendMail({
+    to: emailId,
+    subject,
+    body,
+  });
+});
 
 module.exports = agenda;
