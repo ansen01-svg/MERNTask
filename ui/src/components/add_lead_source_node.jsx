@@ -5,8 +5,13 @@ import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import { useMyEmailDataContext } from "../store_provider/email_data_provider";
-import Dialog from "@mui/material/Dialog";
 import Button from "@mui/material/Button";
+import Card from "./card";
+import MyDialog from "./dialog";
+import TextInput from "./text_input";
+import { nodesWithLead } from "../utils/initial_nodes";
+import { edgesWithLead } from "../utils/initial_edges";
+import { deleteAndUpdateNode } from "../lib/delete_node";
 
 export default function AddLeadNode({ data }) {
   const {
@@ -15,6 +20,7 @@ export default function AddLeadNode({ data }) {
   } = useMyEmailDataContext();
 
   const [open, setOpen] = useState(false);
+  const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [email, setEmail] = useState(emailId || "");
 
   const { getNodes, getEdges, setNodes, setEdges } = useReactFlow();
@@ -36,41 +42,52 @@ export default function AddLeadNode({ data }) {
     }
   }, [emailId]);
 
+  // update nodes and edges
   const updateNodesAndEdges = useCallback(() => {
-    const newNodes = [
-      ...nodes,
-      {
-        id: "2",
-        position: { x: 500, y: 200 },
-        type: "startNode",
-      },
-      {
-        id: "3",
-        position: { x: 500, y: 300 },
-        type: "addNewNode",
-      },
-    ];
-
-    const newEdges = [
-      ...edges,
-      { id: "e1-2", source: "1", target: "2" },
-      { id: "e2-3", source: "2", target: "3" },
-    ];
+    const newNodes = [...nodes, ...nodesWithLead];
+    const newEdges = [...edges, ...edgesWithLead];
 
     setNodes(newNodes);
     setEdges(newEdges);
   }, [nodes, edges, setEdges, setNodes]);
 
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!email) return;
 
     setEmailData((prevState) => {
       const oldState = prevState;
       return { ...oldState, emailId: email };
     });
-    updateNodesAndEdges();
+
+    if (!isEditingEmail) {
+      updateNodesAndEdges();
+    }
     setEmail("");
+    setIsEditingEmail(false);
     handleClose();
+  };
+
+  const editNode = () => {
+    handleClickOpen();
+    setIsEditingEmail(true);
+  };
+
+  const deleteNode = () => {
+    const { updatedNodes, updatedEdges } = deleteAndUpdateNode({
+      nodes,
+      edges,
+      nodeId: data.id,
+    });
+
+    setEmailData((prevState) => ({ ...prevState, emailId: "" }));
+    setNodes(updatedNodes);
+    setEdges(updatedEdges);
   };
 
   return (
@@ -78,12 +95,19 @@ export default function AddLeadNode({ data }) {
       <FormDialog
         open={open}
         handleClose={handleClose}
+        emailId={emailId}
         email={email}
-        setEmail={setEmail}
+        handleEmailChange={handleEmailChange}
         handleSubmit={handleSubmit}
       />
       {emailId ? (
-        <LeadPresentUi emailId={emailId} handleClickOpen={handleClickOpen} />
+        <LeadPresentUi
+          emailId={emailId}
+          handleClickOpen={handleClickOpen}
+          setIsEditingEmail={setIsEditingEmail}
+          editNode={editNode}
+          deleteNode={deleteNode}
+        />
       ) : (
         <LeadAbsentUi handleClickOpen={handleClickOpen} />
       )}
@@ -104,16 +128,14 @@ function LeadAbsentUi({ handleClickOpen }) {
   );
 }
 
-function LeadPresentUi({ handleClickOpen, emailId }) {
-  const [isHovered, setIsHovered] = useState(false);
+function LeadPresentUi(props) {
+  const { editNode, deleteNode, emailId } = props;
 
-  const editNode = () => {
-    handleClickOpen();
-  };
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <div
-      className="w-[220px] p-3 text-primaryLight bg-primary relative flex items-start justify-center gap-2 border-solid border-[1px] border-slate-300 rounded-sm shadow"
+      className="w-[220px] relative"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -125,73 +147,67 @@ function LeadPresentUi({ handleClickOpen, emailId }) {
           >
             <EditOutlinedIcon sx={{ fontSize: "12px", color: "#dc2626" }} />
           </button>
-          <button className="w-[15px] h-[15px] flex items-center justify-center bg-red-300 rounded-sm">
+          <button
+            onClick={deleteNode}
+            className="w-[15px] h-[15px] flex items-center justify-center bg-red-300 rounded-sm"
+          >
             <ClearOutlinedIcon sx={{ fontSize: "12px", color: "#dc2626" }} />
           </button>
         </div>
       )}
 
-      <div className="px-3 py-2 bg-red-300 rounded-sm text-red-600">
-        <PersonAddAltOutlinedIcon />
-      </div>
+      <Card
+        icon={<PersonAddAltOutlinedIcon />}
+        title="Email"
+        data={emailId}
+        iconBgColor="red-300"
+        iconColor="red-600"
+      />
 
-      <div className="text-[12px]">
-        <h1 className="font-medium">Email</h1>
-        <p className="text-left">{emailId}</p>
-      </div>
       <Handle type="source" position={Position.Bottom} />
     </div>
   );
 }
 
 function FormDialog(props) {
-  const { open, handleClose, email, setEmail, handleSubmit } = props;
+  const { open, handleClose, email, handleEmailChange, handleSubmit } = props;
 
   return (
-    <>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        PaperProps={{
-          component: "form",
-          onSubmit: handleSubmit,
-        }}
-        sx={{ ".MuiPaper-root": { width: "450px", height: "500px" } }}
-      >
-        <div className="w-full text-right px-3 py-1 border-b-[1px] border-slate-300">
-          <button type="button" onClick={handleClose}>
-            <ClearOutlinedIcon fontSize="small" sx={{ color: "#2d333a" }} />
-          </button>
-        </div>
-        <div className="w-full px-5 py-4 text-primaryLight">
-          <h1 className="text-[18px] font-medium">Add email</h1>
-          <p className="text-[12px]">Add email to start the sequence.</p>
-        </div>
-        <div className="w-full px-5 py-4 flex flex-col items-start justify-center gap-2">
-          <label htmlFor="email" className="text-[14px] font-medium">
-            Email
-          </label>
-          <input
-            type="text"
-            placeholder="Add an email"
-            name="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full h-8 text-[14px] px-2 py-2 border-solid border-[1px] border-slate-300 outline-none rounded-sm"
-          />
-          <div className="w-full flex items-center justify-end">
-            <Button
-              type="submit"
-              variant="contained"
-              size="small"
-              sx={{ minWidth: "74px", textTransform: "none" }}
-            >
-              Add
-            </Button>
-          </div>
-        </div>
-      </Dialog>
-    </>
+    <MyDialog
+      open={open}
+      handleClose={handleClose}
+      handleSubmit={handleSubmit}
+      title="Add Email"
+      description="Add an email to start the sequence."
+    >
+      <DialogContent email={email} handleChange={handleEmailChange} />
+    </MyDialog>
+  );
+}
+
+function DialogContent(props) {
+  const { email, handleChange } = props;
+
+  return (
+    <div className="w-full px-5 py-4 flex flex-col items-start justify-center gap-2">
+      <TextInput
+        type="text"
+        value={email}
+        handleChange={handleChange}
+        label="Email"
+        labelFor="email"
+      />
+      <div className="w-full flex items-center justify-end">
+        <Button
+          type="submit"
+          variant="contained"
+          size="small"
+          disabled={!email}
+          sx={{ minWidth: "74px", textTransform: "none" }}
+        >
+          Add
+        </Button>
+      </div>
+    </div>
   );
 }

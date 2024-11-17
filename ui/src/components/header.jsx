@@ -1,4 +1,4 @@
-import Button from "@mui/material/Button";
+// import Button from "@mui/material/Button";
 
 export default function Header() {
   return (
@@ -7,13 +7,13 @@ export default function Header() {
         <p className="text-[22px]">Email Scheduler</p>
       </div>
       <div>
-        <Button
+        {/* <Button
           variant="contained"
           size="small"
           sx={{ font: "14px", minWidth: "74px", textTransform: "none" }}
         >
           Save
-        </Button>
+        </Button> */}
       </div>
     </div>
   );

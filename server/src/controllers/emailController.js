@@ -1,15 +1,42 @@
-// server/controllers/emailController.js
 const agenda = require("../jobs/agendaJobs");
+const Email = require("../schema/email.schema");
 
 const scheduleEmail = async (req, res) => {
-  const { time, email, subject, text } = req.body;
+  const {
+    emailId,
+    emailTemplate,
+    emailBody: { subject, body },
+    delay,
+  } = req.body;
 
   try {
-    await agenda.schedule(time, "send email", { email, subject, text });
-    res.status(200).json({ message: "Email scheduled successfully" });
+    if (!emailId || !emailTemplate || !subject || !body || !delay) {
+      res.status(401).json({
+        success: false,
+        message: "Please provide all the fields",
+      });
+    }
+
+    const emailData = {
+      lead: emailId,
+      emailTemplate,
+      delay,
+    };
+
+    await Email.create(emailData);
+
+    await agenda.schedule(`in ${delay.by} ${delay.type}`, "send email", {
+      emailId,
+      subject,
+      body,
+    });
+    res.status(200).json({
+      success: true,
+      message: "Email scheduled successfully",
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Error scheduling email" });
+    res.status(500).json({ success: false, message: "Error scheduling email" });
   }
 };
 
