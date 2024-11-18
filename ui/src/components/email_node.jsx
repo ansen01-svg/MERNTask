@@ -77,8 +77,8 @@ export default function EmailNode({ data }) {
         icon={<MailOutlineOutlinedIcon />}
         title="Email"
         data={`Template: ${emailTemplate || ""}`}
-        iconBgColor="purple-300"
-        iconColor="purple-600"
+        iconBgColor="purple1"
+        iconColor="purple2"
       />
 
       <Handle type="target" position={Position.Top} />
