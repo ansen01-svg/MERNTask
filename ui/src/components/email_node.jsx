@@ -43,6 +43,7 @@ export default function EmailNode({ data }) {
 
     setEmailData((prevState) => ({
       ...prevState,
+      emailTemplate: "",
       emailBody: { subject: "", body: "" },
     }));
     setNodes(updatedNodes);
@@ -56,7 +57,7 @@ export default function EmailNode({ data }) {
       onMouseLeave={() => setIsHovered(false)}
     >
       {isHovered && (
-        <div className="p-2 flex items-center justify-center gap-2 absolute top-[-18px] right-[-16px]">
+        <div className="p-2 flex items-center justify-center gap-2 absolute top-[-15px] right-[-14px]">
           <button
             onClick={editNode}
             className="w-[15px] h-[15px] flex items-center justify-center bg-red-300 rounded-sm"

@@ -16,7 +16,7 @@ export const nodesWithLead = [
   },
   {
     id: "2",
-    position: { x: 500, y: 300 },
+    position: { x: 590, y: 300 },
     type: "addNewNode",
     data: { id: "2", type: "addNewNode" },
   },

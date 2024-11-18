@@ -9,7 +9,7 @@ export const deleteAndUpdateNode = ({ nodes, edges, nodeId }) => {
     (edge) => edge.source !== nodeId && edge.target !== nodeId
   );
 
-  // If there are both incoming and outgoing edges, create a new edge
+  // Ensure only one edge remains
   if (incomingEdge && outgoingEdge) {
     const newEdge = {
       id: `e-${incomingEdge.source}-${outgoingEdge.target}`,
@@ -17,6 +17,10 @@ export const deleteAndUpdateNode = ({ nodes, edges, nodeId }) => {
       target: outgoingEdge.target,
     };
     updatedEdges.push(newEdge);
+  } else if (incomingEdge) {
+    updatedEdges.push(incomingEdge);
+  } else if (outgoingEdge) {
+    updatedEdges.push(outgoingEdge);
   }
 
   return { updatedNodes, updatedEdges };

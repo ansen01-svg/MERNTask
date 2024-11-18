@@ -71,8 +71,10 @@ export default function FlowEditor() {
   // add a new node
   const addNewNode = useCallback(
     (type) => {
-      const lastNode = nodes[nodes.length - 2]; // Get the last actual node
-      const newNodeId = `${nodes.length - 1}`;
+      const lastNode = nodes[nodes.length - 2];
+      const newNodeId = `${
+        Math.max(...nodes.map((node) => parseInt(node.id))) + 1
+      }`;
 
       const newNode = {
         id: newNodeId,
@@ -92,25 +94,29 @@ export default function FlowEditor() {
       // Update the position of the "Add Node" button
       const updatedAddNodeButton = {
         ...nodes[nodes.length - 1],
-        id: (parseInt(newNodeId) + 1).toString(),
-        // position: { x: lastNode.position.x, y: newNode.position.y + 100 },
+        id: `${Math.max(...nodes.map((node) => parseInt(node.id))) + 2}`,
         position: { x: newNodeX, y: newNode.position.y + 100 },
         data: {
           ...nodes[nodes.length - 1].data,
-          id: (parseInt(newNodeId) + 1).toString(),
+          id: `${Math.max(...nodes.map((node) => parseInt(node.id))) + 2}`,
         },
       };
 
-      // Filter out any existing edge that connects to the "Add Node" button
-      const filteredEdges = edges.filter((edge) => edge.target !== newNodeId);
-
-      // Create a new edge connecting the newly added node to the "Add Node" button
+      // Create the edge connecting the new node to the updated "Add Node" button
       const addNodeEdge = {
         id: `e-${newNodeId}-${updatedAddNodeButton.id}`,
         source: newNodeId,
         target: updatedAddNodeButton.id,
       };
 
+      // Filter out any existing edges connected to the "Add Node" button to avoid duplicates
+      const filteredEdges = edges.filter(
+        (edge) =>
+          edge.source !== nodes[nodes.length - 1].id &&
+          edge.target !== nodes[nodes.length - 1].id
+      );
+
+      // Add the new node, updated "Add Node" button, and their respective edges
       setNodes((nds) => [...nds.slice(0, -1), newNode, updatedAddNodeButton]);
       setEdges((eds) => [...filteredEdges, newEdge, addNodeEdge]);
     },

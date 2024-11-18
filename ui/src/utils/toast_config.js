@@ -1,7 +1,7 @@
 import { Slide } from "react-toastify";
 
 export const toastConfig = {
-  style: { fontSize: "14px" },
+  style: { fontSize: "13px" },
   position: "top-center",
   autoClose: 3000,
   hideProgressBar: false,
