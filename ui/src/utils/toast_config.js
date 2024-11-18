@@ -1,6 +1,7 @@
 import { Slide } from "react-toastify";
 
 export const toastConfig = {
+  style: { fontSize: "14px" },
   position: "top-center",
   autoClose: 3000,
   hideProgressBar: false,
@@ -8,6 +9,6 @@ export const toastConfig = {
   pauseOnHover: true,
   draggable: true,
   progress: undefined,
-  theme: "light",
+  theme: "dark",
   transition: Slide,
 };

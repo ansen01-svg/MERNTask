@@ -8,11 +8,15 @@ const path = require("path");
 
 const app = express();
 
-app.use(
-  cors({
-    origin: process.env.CLIENT,
-  })
-);
+const corsOptions = {
+  origin: process.env.CLIENT,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
+
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../public")));
 
