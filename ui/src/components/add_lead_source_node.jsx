@@ -135,13 +135,7 @@ function LeadPresentUi(props) {
         </div>
       )}
 
-      <Card
-        icon={<PersonAddAltOutlinedIcon />}
-        title="Email"
-        data={emailId}
-        iconBgColor="orange1"
-        iconColor="orange2"
-      />
+      <Card icon={<PersonAddAltOutlinedIcon />} title="Email" data={emailId} />
 
       <Handle type="source" position={Position.Bottom} />
     </div>
