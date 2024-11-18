@@ -5,7 +5,7 @@ import { postEmail } from "../lib/post_email";
 
 const EmailDataContext = createContext(null);
 
-const initialEmailData = {
+export const initialEmailData = {
   emailId: "",
   emailTemplate: "",
   emailBody: { subject: "", body: "" },
@@ -13,9 +13,15 @@ const initialEmailData = {
 };
 
 export const EmailDataContextProvider = ({ children }) => {
-  const [emailData, setEmailData] = useState(initialEmailData);
+  const [emailData, setEmailData] = useState(() => {
+    const savedData = localStorage.getItem("emailData");
+    return savedData ? JSON.parse(savedData) : initialEmailData;
+  });
 
-  console.log(emailData);
+  // Save emailData to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("emailData", JSON.stringify(emailData));
+  }, [emailData]);
 
   // save sequence
   const saveSequence = async () => {

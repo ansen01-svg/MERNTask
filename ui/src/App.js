@@ -1,4 +1,5 @@
-import React from "react";
+import { ToastContainer, Slide } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import FlowEditor from "./components/flow_editor";
 import Header from "./components/header";
 import { EmailDataContextProvider } from "./store_provider/email_data_provider";
@@ -14,6 +15,19 @@ function App() {
             <FlowEditor />
           </RestStatesContextProvider>
         </EmailDataContextProvider>
+        <ToastContainer
+          position="top-center"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+          transition={Slide}
+        />
       </main>
     </div>
   );
