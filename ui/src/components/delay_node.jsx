@@ -75,8 +75,6 @@ export default function EmailNode({ data }) {
         icon={<WatchLaterOutlinedIcon />}
         title="Delay"
         data={`Delay by: ${delay?.by ? `${delay.by} ${delay.type}` : ""}`}
-        iconBgColor="red-300"
-        iconColor="red-600"
       />
 
       <Handle type="target" position={Position.Top} />

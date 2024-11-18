@@ -139,8 +139,6 @@ function DialogContent(props) {
             icon={<WatchLaterOutlinedIcon />}
             title="Wait"
             data="Set a delay (in hours)"
-            iconBgColor="red1"
-            iconColor="red2"
           />
         </button>
       ) : (
@@ -153,8 +151,6 @@ function DialogContent(props) {
             icon={<MailOutlineOutlinedIcon />}
             title="Email"
             data="Send an email to a lead"
-            iconBgColor="purple1"
-            iconColor="purple2"
           />
         </button>
       )}
