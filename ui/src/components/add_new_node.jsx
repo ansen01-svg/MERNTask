@@ -153,8 +153,8 @@ function DialogContent(props) {
             icon={<MailOutlineOutlinedIcon />}
             title="Email"
             data="Send an email to a lead"
-            iconBgColor="red-300"
-            iconColor="red-600"
+            iconBgColor="purple-300"
+            iconColor="purple-600"
           />
         </button>
       )}
