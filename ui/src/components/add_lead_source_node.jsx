@@ -139,8 +139,8 @@ function LeadPresentUi(props) {
         icon={<PersonAddAltOutlinedIcon />}
         title="Email"
         data={emailId}
-        iconBgColor="orange-300"
-        iconColor="orange-600"
+        iconBgColor="orange1"
+        iconColor="orange2"
       />
 
       <Handle type="source" position={Position.Bottom} />
