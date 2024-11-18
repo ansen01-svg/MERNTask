@@ -3,7 +3,6 @@ import { Handle, Position, useReactFlow } from "@xyflow/react";
 import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import { useMyEmailDataContext } from "../store_provider/email_data_provider";
 import Button from "@mui/material/Button";
 import Card from "./card";
@@ -11,7 +10,6 @@ import MyDialog from "./dialog";
 import TextInput from "./text_input";
 import { nodesWithLead } from "../utils/initial_nodes";
 import { edgesWithLead } from "../utils/initial_edges";
-import { deleteAndUpdateNode } from "../lib/delete_node";
 
 export default function AddLeadNode({ data }) {
   const {
@@ -78,18 +76,6 @@ export default function AddLeadNode({ data }) {
     setIsEditingEmail(true);
   };
 
-  const deleteNode = () => {
-    const { updatedNodes, updatedEdges } = deleteAndUpdateNode({
-      nodes,
-      edges,
-      nodeId: data.id,
-    });
-
-    setEmailData((prevState) => ({ ...prevState, emailId: "" }));
-    setNodes(updatedNodes);
-    setEdges(updatedEdges);
-  };
-
   return (
     <>
       <FormDialog
@@ -106,7 +92,6 @@ export default function AddLeadNode({ data }) {
           handleClickOpen={handleClickOpen}
           setIsEditingEmail={setIsEditingEmail}
           editNode={editNode}
-          deleteNode={deleteNode}
         />
       ) : (
         <LeadAbsentUi handleClickOpen={handleClickOpen} />
@@ -129,7 +114,7 @@ function LeadAbsentUi({ handleClickOpen }) {
 }
 
 function LeadPresentUi(props) {
-  const { editNode, deleteNode, emailId } = props;
+  const { editNode, emailId } = props;
 
   const [isHovered, setIsHovered] = useState(false);
 
@@ -140,18 +125,12 @@ function LeadPresentUi(props) {
       onMouseLeave={() => setIsHovered(false)}
     >
       {isHovered && (
-        <div className="p-2 flex items-center justify-center gap-2 absolute top-[-18px] right-[-16px]">
+        <div className="p-2 flex items-center justify-center gap-2 absolute top-[-15px] right-[-14px]">
           <button
             onClick={editNode}
             className="w-[15px] h-[15px] flex items-center justify-center bg-red-300 rounded-sm"
           >
             <EditOutlinedIcon sx={{ fontSize: "12px", color: "#dc2626" }} />
-          </button>
-          <button
-            onClick={deleteNode}
-            className="w-[15px] h-[15px] flex items-center justify-center bg-red-300 rounded-sm"
-          >
-            <ClearOutlinedIcon sx={{ fontSize: "12px", color: "#dc2626" }} />
           </button>
         </div>
       )}
