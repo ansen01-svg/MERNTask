@@ -304,7 +304,7 @@ function DelayDialogContent({ delay, handleDelayChange }) {
         placeholder={"Select delay type"}
         value={delay.type}
         handleChange={handleDelayChange}
-        options={["Day", "Hours"]}
+        options={["Days", "Hours"]}
       />
       <div className="w-full flex items-center justify-end">
         <Button
