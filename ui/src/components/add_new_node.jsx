@@ -14,7 +14,7 @@ import { initialNodes } from "../utils/initial_nodes";
 import { initialEmailData } from "../store_provider/email_data_provider";
 import { toastConfig } from "../utils/toast_config";
 
-export default function AddNewNode({ data }) {
+export default function AddNewNode() {
   const [open, setOpen] = useState(false);
 
   const { setNodes, setEdges } = useReactFlow();
